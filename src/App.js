@@ -18,10 +18,18 @@ class App extends Component {
           query:'',
         showingInfoWindow: false,
         infoWindowPosition: {},
-        selectedPlace: {}
+        selectedPlace: {},
+        hasError:false,
+        animation:this.props.google.maps.Animation.DROP
+
 
 }}
 
+componentDidCatch(error, info) {
+  // Display fallback UI
+  this.setState({ hasError: true });
+
+}
 
 componentDidMount(){
   //fetch place data from foursquare
@@ -115,7 +123,10 @@ onMapClick = ()=> {
 
   render() {
 
-
+    if (this.state.hasError) {
+    // You can render any custom fallback UI
+    return <h1>Something went wrong.</h1>;
+  }
     let showLocations
       const {query,locations} = this.state
       //initialize the bounds of the map
@@ -136,7 +147,7 @@ onMapClick = ()=> {
       showLocations.sort(sortBy('title'))
          //check if the map is loaded if it is not loaded show loading
          if (!this.props.loaded) {
-         return <div>Loading...</div>
+         return <div>Loading..</div>
             }
           //the info of selected place
       var selectedPlace = this.state.selectedPlace
@@ -144,6 +155,7 @@ onMapClick = ()=> {
       //adding style empty to reset the style of the Map component  so I can control its height from the css file
        const style = {
         }
+
     return (
         <div className ='container-fluid'>
          <div id ='header' className='row'>
@@ -155,13 +167,10 @@ onMapClick = ()=> {
         <div id='title' tabIndex ='1' className='col-10'>Neighborhood Map</div>
         </div>
         <div id='content-row' className='row'>
-      <div id ='listView' className='offscreen'>
+      <div id ='listView' className='col-8 col-md-4 col-lg-2'>
 
        <div className="input-group mb-3">
-       <div className="input-group-prepend">
-         <span className="input-group-text d-md-inline-flex d-none" id="basic-addon1">Filter</span>
-       </div>
-      <input role="search" tabIndex ='1' aria-labelledby="filter" id="search-field" className="form-control" type="text" placeholder="Enter place name"
+      <input role="search" tabIndex ='1' aria-label="Input filter places:" id="search-field" className="form-control" type="text" placeholder="Enter place name"
       value={this.state.query} onChange={(event)=>this.updateQuery(event.target.value)}/>
       </div>
        <div>
@@ -179,7 +188,7 @@ onMapClick = ()=> {
         </ul>
        </div>
       </div>
-      <div id='mapContainer'  aria-label="Map showing places" tabIndex = '0' role = 'Application' >
+      <div id='mapContainer'  aria-label="Map showing places" tabIndex = '0' role = 'Application' className='col-4 col-md-8 col-lg-10' >
       <Map google={this.props.google}
       onClick={this.onMapClick}
        initialCenter = {{lat:51.4980479,lng:-0.0105351 }}
@@ -189,7 +198,7 @@ onMapClick = ()=> {
       {showLocations.map((location,index)=>(
         <Marker
           title = {location.title}
-          position = {location.position}
+         position = {{lat:location.position.lat, lng: location.position.lng}}
           title = { location.title}
           key = {index}
           onClick={this.onMarkerClick}
@@ -228,5 +237,5 @@ onMapClick = ()=> {
   }
 
 export default GoogleApiWrapper({
-  apiKey:'AIzaSyAKbEWN6efrkQm26KtDn56Sv1IwCayn9JU',
+  apiKey:'AIzaSyAKbEWN6efrkQm26KtDn56Sv1IwCayn9JU'
 })(App)
