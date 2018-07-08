@@ -40,4 +40,5 @@ If it doesn't, navigate to [http://localhost:3000/](http://localhost:3000/) in y
  7-[How to use Bootstrap with React](https://blog.logrocket.com/how-to-use-bootstrap-with-react-a354715d1121)
  
  8- [foursquare Api](https://developer.foursquare.com/)
+ 9-  I copied [GoogleApi.js,GoogleApiComponent.js,ScriptCache.js](https://gist.github.com/auser/1d55aa3897f15d17caf21dc39b85b663)from gits and modified it to change the error message if theere is no internet connection and handle the exception in ScriptCache.js 
  
