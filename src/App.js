@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 // import the Google Maps API Wrapper from google-maps-react
-import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
+import {Map, InfoWindow, Marker} from 'google-maps-react';
+import {wrapper} from './GoogleApiComponent.js'
 import {Locations} from './Locations'
 import fetchJsonp from 'fetch-jsonp'
 import {styles} from './mapStyle.js'
@@ -19,17 +20,14 @@ class App extends Component {
         showingInfoWindow: false,
         infoWindowPosition: {},
         selectedPlace: {},
-        hasError:false,
         animation:this.props.google.maps.Animation.DROP
 
 
-}}
-
-componentDidCatch(error, info) {
-  // Display fallback UI
-  this.setState({ hasError: true });
+}
 
 }
+
+
 
 componentDidMount(){
   //fetch place data from foursquare
@@ -44,13 +42,10 @@ componentDidMount(){
       console.log(locationData)
     }).catch(error => console.error())
   })
-  /*const map = document.querySelector('#mapContainer > div > div')
-  map.setAttribute("tabindex", -1)
-  const mapFirstChild = document.querySelector('#mapContainer > div')
-  mapFirstChild.setAttribute("tabindex", -1)
-  console.log(map)
-  console.log(mapFirstChild)*/
-
+//If the Api not work it show alert message
+  window.gm_authFailure = function() {
+     alert('The Api key invaild please check it or contact the developer')
+  }
 
 }
 //set and show the infow window when marker click
@@ -123,10 +118,6 @@ onMapClick = ()=> {
 
   render() {
 
-    if (this.state.hasError) {
-    // You can render any custom fallback UI
-    return <h1>Something went wrong.</h1>;
-  }
     let showLocations
       const {query,locations} = this.state
       //initialize the bounds of the map
@@ -155,8 +146,9 @@ onMapClick = ()=> {
       //adding style empty to reset the style of the Map component  so I can control its height from the css file
        const style = {
         }
-
+     if(this.props.loaded){
     return (
+
         <div className ='container-fluid'>
          <div id ='header' className='row'>
         <div  id ='biconParent' ria-labelledby = 'hamburger icon'className ='col-2' role ='button' onClick ={this.handleBurgerIconClick}  >
@@ -188,6 +180,7 @@ onMapClick = ()=> {
         </ul>
        </div>
       </div>
+
       <div id='mapContainer'  aria-label="Map showing places" tabIndex = '0' role = 'Application' className='col-4 col-md-8 col-lg-10' >
       <Map google={this.props.google}
       onClick={this.onMapClick}
@@ -232,10 +225,10 @@ onMapClick = ()=> {
       </div>
       </div>
       </div>
-    )
+    )}
   }
   }
 
-export default GoogleApiWrapper({
+export default wrapper({
   apiKey:'AIzaSyAKbEWN6efrkQm26KtDn56Sv1IwCayn9JU'
 })(App)
